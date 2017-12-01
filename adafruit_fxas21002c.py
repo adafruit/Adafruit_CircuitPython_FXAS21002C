@@ -71,7 +71,7 @@ class FXAS21002C:
     def __init__(self, i2c, address=_FXAS21002C_ADDRESS,
                  gyro_range=GYRO_RANGE_250DPS):
         assert gyro_range in (GYRO_RANGE_250DPS, GYRO_RANGE_500DPS,
-                              GYRO_RANGE_100DPS, GYRO_RANGE_2000DPS)
+                              GYRO_RANGE_1000DPS, GYRO_RANGE_2000DPS)
         self._gyro_range = gyro_range
         self._device = i2c_device.I2CDevice(i2c, address)
         # Check for chip ID value.
@@ -87,8 +87,11 @@ class FXAS21002C:
         elif gyro_range == GYRO_RANGE_2000DPS:
             ctrlReg0 = 0x00
         # Reset then switch to active mode with 100Hz output
-        self._write_u8(_GYRO_REGISTER_CTRL_REG1, 0x00)     # Standby
-        self._write_u8(_GYRO_REGISTER_CTRL_REG1, (1<<6))   # Reset
+        # Putting into standy doesn't work as the chip becomes instantly
+        # unresponsive.  Perhaps CircuitPython is too slow to go into standby
+        # and send reset?  Keep these two commented for now:
+        #self._write_u8(_GYRO_REGISTER_CTRL_REG1, 0x00)     # Standby)
+        #self._write_u8(_GYRO_REGISTER_CTRL_REG1, (1<<6))   # Reset
         self._write_u8(_GYRO_REGISTER_CTRL_REG0, ctrlReg0) # Set sensitivity
         self._write_u8(_GYRO_REGISTER_CTRL_REG1, 0x0E)     # Active
         time.sleep(0.1) # 60 ms + 1/ODR
@@ -97,7 +100,7 @@ class FXAS21002C:
         # Read an 8-bit unsigned value from the specified 8-bit address.
         with self._device:
             self._BUFFER[0] = address & 0xFF
-            self._device.write(self._BUFFER, end=1)
+            self._device.write(self._BUFFER, end=1, stop=False)
             self._device.readinto(self._BUFFER, end=1)
         return self._BUFFER[0]
 
@@ -115,8 +118,8 @@ class FXAS21002C:
         """
         # Read 7 bytes from the sensor.
         with self._device:
-            self._BUFFER[0] = GYRO_REGISTER_STATUS | 0x80
-            self._device.write(self._BUFFER, end=1)
+            self._BUFFER[0] = _GYRO_REGISTER_STATUS | 0x80
+            self._device.write(self._BUFFER, end=1, stop=False)
             self._device.readinto(self._BUFFER)
         # Parse out the gyroscope data.
         status = self._BUFFER[0]
