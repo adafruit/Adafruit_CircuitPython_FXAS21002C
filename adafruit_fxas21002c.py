@@ -32,6 +32,7 @@ See examples/simpletest.py for a demo of the usage.
 * Author(s): Tony DiCola
 """
 import time
+import ustruct
 
 import adafruit_bus_device.i2c_device as i2c_device
 
@@ -98,41 +99,33 @@ class FXAS21002C:
 
     def _read_u8(self, address):
         # Read an 8-bit unsigned value from the specified 8-bit address.
-        with self._device:
+        with self._device as i2c:
             self._BUFFER[0] = address & 0xFF
-            self._device.write(self._BUFFER, end=1, stop=False)
-            self._device.readinto(self._BUFFER, end=1)
+            i2c.write(self._BUFFER, end=1, stop=False)
+            i2c.readinto(self._BUFFER, end=1)
         return self._BUFFER[0]
 
     def _write_u8(self, address, val):
         # Write an 8-bit unsigned value to the specified 8-bit address.
-        with self._device:
+        with self._device as i2c:
             self._BUFFER[0] = address & 0xFF
             self._BUFFER[1] = val & 0xFF
-            self._device.write(self._BUFFER, end=2)
+            i2c.write(self._BUFFER, end=2)
 
     def read_raw(self):
         """Read the raw gyroscope readings.  Returns a 3-tuple of X, Y, Z axis
-        16-bit unsigned values.  If you want the gyroscope values in friendly
+        16-bit signed values.  If you want the gyroscope values in friendly
         units consider using the gyroscope property!
         """
-        # Read 7 bytes from the sensor.
+        # Read gyro data from the sensor.
         with self._device:
-            self._BUFFER[0] = _GYRO_REGISTER_STATUS | 0x80
+            self._BUFFER[0] = _GYRO_REGISTER_OUT_X_MSB
             self._device.write(self._BUFFER, end=1, stop=False)
             self._device.readinto(self._BUFFER)
-        # Parse out the gyroscope data.
-        status = self._BUFFER[0]
-        xhi    = self._BUFFER[1]
-        xlo    = self._BUFFER[2]
-        yhi    = self._BUFFER[3]
-        ylo    = self._BUFFER[4]
-        zhi    = self._BUFFER[5]
-        zlo    = self._BUFFER[6]
-        # Shift values to create properly formed integers
-        raw_x = ((xhi << 8) | xlo) & 0xFFFF
-        raw_y = ((yhi << 8) | ylo) & 0xFFFF
-        raw_z = ((zhi << 8) | zlo) & 0xFFFF
+        # Parse out the gyroscope data as 16-bit signed data.
+        raw_x = ustruct.unpack_from('>h', self._BUFFER[0:2])[0]
+        raw_y = ustruct.unpack_from('>h', self._BUFFER[2:4])[0]
+        raw_z = ustruct.unpack_from('>h', self._BUFFER[4:6])[0]
         return (raw_x, raw_y, raw_z)
 
     @property
