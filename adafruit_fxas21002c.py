@@ -35,34 +35,36 @@ import time
 import ustruct
 
 import adafruit_bus_device.i2c_device as i2c_device
+from micropython import const
 
 
 # Internal constants and register values:
-_FXAS21002C_ADDRESS       = const(0x21)  # 0100001
-_FXAS21002C_ID            = const(0xD7)  # 1101 0111
-_GYRO_REGISTER_STATUS     = const(0x00)
-_GYRO_REGISTER_OUT_X_MSB  = const(0x01)
-_GYRO_REGISTER_OUT_X_LSB  = const(0x02)
-_GYRO_REGISTER_OUT_Y_MSB  = const(0x03)
-_GYRO_REGISTER_OUT_Y_LSB  = const(0x04)
-_GYRO_REGISTER_OUT_Z_MSB  = const(0x05)
-_GYRO_REGISTER_OUT_Z_LSB  = const(0x06)
-_GYRO_REGISTER_WHO_AM_I   = const(0x0C)  # 11010111   r
-_GYRO_REGISTER_CTRL_REG0  = const(0x0D)  # 00000000   r/w
-_GYRO_REGISTER_CTRL_REG1  = const(0x13)  # 00000000   r/w
-_GYRO_REGISTER_CTRL_REG2  = const(0x14)  # 00000000   r/w
-_GYRO_SENSITIVITY_250DPS  = 0.0078125    # Table 35 of datasheet
-_GYRO_SENSITIVITY_500DPS  = 0.015625     # ..
-_GYRO_SENSITIVITY_1000DPS = 0.03125      # ..
-_GYRO_SENSITIVITY_2000DPS = 0.0625       # ..
+_FXAS21002C_ADDRESS = const(0x21)  # 0100001
+_FXAS21002C_ID = const(0xD7)       # 1101 0111
+_GYRO_REGISTER_STATUS = const(0x00)
+_GYRO_REGISTER_OUT_X_MSB = const(0x01)
+_GYRO_REGISTER_OUT_X_LSB = const(0x02)
+_GYRO_REGISTER_OUT_Y_MSB = const(0x03)
+_GYRO_REGISTER_OUT_Y_LSB = const(0x04)
+_GYRO_REGISTER_OUT_Z_MSB = const(0x05)
+_GYRO_REGISTER_OUT_Z_LSB = const(0x06)
+_GYRO_REGISTER_WHO_AM_I = const(0x0C)   # 11010111   r
+_GYRO_REGISTER_CTRL_REG0 = const(0x0D)  # 00000000   r/w
+_GYRO_REGISTER_CTRL_REG1 = const(0x13)  # 00000000   r/w
+_GYRO_REGISTER_CTRL_REG2 = const(0x14)  # 00000000   r/w
+_GYRO_SENSITIVITY_250DPS = 0.0078125    # Table 35 of datasheet
+_GYRO_SENSITIVITY_500DPS = 0.015625     # ..
+_GYRO_SENSITIVITY_1000DPS = 0.03125     # ..
+_GYRO_SENSITIVITY_2000DPS = 0.0625      # ..
 
 # User facing constants/module globals:
-GYRO_RANGE_250DPS  = 250
-GYRO_RANGE_500DPS  = 500
+GYRO_RANGE_250DPS = 250
+GYRO_RANGE_500DPS = 500
 GYRO_RANGE_1000DPS = 1000
 GYRO_RANGE_2000DPS = 2000
 
 class FXAS21002C:
+    """Driver for the NXP FXAS21002C gyroscope."""
 
     # Class-level buffer for reading and writing data with the sensor.
     # This reduces memory allocations but means the code is not re-entrant or
@@ -78,22 +80,22 @@ class FXAS21002C:
         # Check for chip ID value.
         if self._read_u8(_GYRO_REGISTER_WHO_AM_I) != _FXAS21002C_ID:
             raise RuntimeError('Failed to find FXAS21002C, check wiring!')
-        ctrlReg0 = 0x00
+        ctrl_reg0 = 0x00
         if gyro_range == GYRO_RANGE_250DPS:
-            ctrlReg0 = 0x03
+            ctrl_reg0 = 0x03
         elif gyro_range == GYRO_RANGE_500DPS:
-            ctrlReg0 = 0x02
+            ctrl_reg0 = 0x02
         elif gyro_range == GYRO_RANGE_1000DPS:
-            ctrlReg0 = 0x01
+            ctrl_reg0 = 0x01
         elif gyro_range == GYRO_RANGE_2000DPS:
-            ctrlReg0 = 0x00
+            ctrl_reg0 = 0x00
         # Reset then switch to active mode with 100Hz output
         # Putting into standy doesn't work as the chip becomes instantly
         # unresponsive.  Perhaps CircuitPython is too slow to go into standby
         # and send reset?  Keep these two commented for now:
         #self._write_u8(_GYRO_REGISTER_CTRL_REG1, 0x00)     # Standby)
         #self._write_u8(_GYRO_REGISTER_CTRL_REG1, (1<<6))   # Reset
-        self._write_u8(_GYRO_REGISTER_CTRL_REG0, ctrlReg0) # Set sensitivity
+        self._write_u8(_GYRO_REGISTER_CTRL_REG0, ctrl_reg0) # Set sensitivity
         self._write_u8(_GYRO_REGISTER_CTRL_REG1, 0x0E)     # Active
         time.sleep(0.1) # 60 ms + 1/ODR
 
