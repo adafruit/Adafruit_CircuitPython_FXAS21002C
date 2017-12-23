@@ -39,29 +39,31 @@ from micropython import const
 
 
 # Internal constants and register values:
-_FXAS21002C_ADDRESS = const(0x21)  # 0100001
-_FXAS21002C_ID = const(0xD7)       # 1101 0111
-_GYRO_REGISTER_STATUS = const(0x00)
-_GYRO_REGISTER_OUT_X_MSB = const(0x01)
-_GYRO_REGISTER_OUT_X_LSB = const(0x02)
-_GYRO_REGISTER_OUT_Y_MSB = const(0x03)
-_GYRO_REGISTER_OUT_Y_LSB = const(0x04)
-_GYRO_REGISTER_OUT_Z_MSB = const(0x05)
-_GYRO_REGISTER_OUT_Z_LSB = const(0x06)
-_GYRO_REGISTER_WHO_AM_I = const(0x0C)   # 11010111   r
-_GYRO_REGISTER_CTRL_REG0 = const(0x0D)  # 00000000   r/w
-_GYRO_REGISTER_CTRL_REG1 = const(0x13)  # 00000000   r/w
-_GYRO_REGISTER_CTRL_REG2 = const(0x14)  # 00000000   r/w
-_GYRO_SENSITIVITY_250DPS = 0.0078125    # Table 35 of datasheet
-_GYRO_SENSITIVITY_500DPS = 0.015625     # ..
+# pylint: disable=bad-whitespace
+_FXAS21002C_ADDRESS       = const(0x21)  # 0100001
+_FXAS21002C_ID            = const(0xD7)       # 1101 0111
+_GYRO_REGISTER_STATUS     = const(0x00)
+_GYRO_REGISTER_OUT_X_MSB  = const(0x01)
+_GYRO_REGISTER_OUT_X_LSB  = const(0x02)
+_GYRO_REGISTER_OUT_Y_MSB  = const(0x03)
+_GYRO_REGISTER_OUT_Y_LSB  = const(0x04)
+_GYRO_REGISTER_OUT_Z_MSB  = const(0x05)
+_GYRO_REGISTER_OUT_Z_LSB  = const(0x06)
+_GYRO_REGISTER_WHO_AM_I   = const(0x0C)   # 11010111   r
+_GYRO_REGISTER_CTRL_REG0  = const(0x0D)  # 00000000   r/w
+_GYRO_REGISTER_CTRL_REG1  = const(0x13)  # 00000000   r/w
+_GYRO_REGISTER_CTRL_REG2  = const(0x14)  # 00000000   r/w
+_GYRO_SENSITIVITY_250DPS  = 0.0078125    # Table 35 of datasheet
+_GYRO_SENSITIVITY_500DPS  = 0.015625     # ..
 _GYRO_SENSITIVITY_1000DPS = 0.03125     # ..
 _GYRO_SENSITIVITY_2000DPS = 0.0625      # ..
 
 # User facing constants/module globals:
-GYRO_RANGE_250DPS = 250
-GYRO_RANGE_500DPS = 500
-GYRO_RANGE_1000DPS = 1000
-GYRO_RANGE_2000DPS = 2000
+GYRO_RANGE_250DPS   = 250
+GYRO_RANGE_500DPS   = 500
+GYRO_RANGE_1000DPS  = 1000
+GYRO_RANGE_2000DPS  = 2000
+# pylint: enable=bad-whitespace
 
 class FXAS21002C:
     """Driver for the NXP FXAS21002C gyroscope."""
@@ -130,6 +132,10 @@ class FXAS21002C:
         raw_z = ustruct.unpack_from('>h', self._BUFFER[4:6])[0]
         return (raw_x, raw_y, raw_z)
 
+    # pylint is confused and incorrectly marking this function as bad return
+    # types.  Perhaps it doesn't understand map returns an iterable value.
+    # Disable the warning.
+    # pylint: disable=inconsistent-return-statements
     @property
     def gyroscope(self):
         """Read the gyroscope value and return its X, Y, Z axis values as a
@@ -145,3 +151,4 @@ class FXAS21002C:
             return map(lambda x: x * _GYRO_SENSITIVITY_1000DPS, raw)
         elif self._gyro_range == GYRO_RANGE_2000DPS:
             return map(lambda x: x * _GYRO_SENSITIVITY_2000DPS, raw)
+    # pylint: enable=inconsistent-return-statements
