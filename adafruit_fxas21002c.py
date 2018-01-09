@@ -32,7 +32,10 @@ See examples/simpletest.py for a demo of the usage.
 * Author(s): Tony DiCola
 """
 import time
-import ustruct
+try:
+    import ustruct as struct
+except ImportError:
+    import struct
 
 import adafruit_bus_device.i2c_device as i2c_device
 from micropython import const
@@ -127,15 +130,14 @@ class FXAS21002C:
             self._device.write(self._BUFFER, end=1, stop=False)
             self._device.readinto(self._BUFFER)
         # Parse out the gyroscope data as 16-bit signed data.
-        raw_x = ustruct.unpack_from('>h', self._BUFFER[0:2])[0]
-        raw_y = ustruct.unpack_from('>h', self._BUFFER[2:4])[0]
-        raw_z = ustruct.unpack_from('>h', self._BUFFER[4:6])[0]
+        raw_x = struct.unpack_from('>h', self._BUFFER[0:2])[0]
+        raw_y = struct.unpack_from('>h', self._BUFFER[2:4])[0]
+        raw_z = struct.unpack_from('>h', self._BUFFER[4:6])[0]
         return (raw_x, raw_y, raw_z)
 
     # pylint is confused and incorrectly marking this function as bad return
     # types.  Perhaps it doesn't understand map returns an iterable value.
     # Disable the warning.
-    # pylint: disable=inconsistent-return-statements
     @property
     def gyroscope(self):
         """Read the gyroscope value and return its X, Y, Z axis values as a
@@ -143,12 +145,13 @@ class FXAS21002C:
         """
         raw = self.read_raw()
         # Compensate values depending on the resolution
+        factor = 0
         if self._gyro_range == GYRO_RANGE_250DPS:
-            return map(lambda x: x * _GYRO_SENSITIVITY_250DPS, raw)
+            factor = _GYRO_SENSITIVITY_250DPS
         elif self._gyro_range == GYRO_RANGE_500DPS:
-            return map(lambda x: x * _GYRO_SENSITIVITY_500DPS, raw)
+            factor = _GYRO_SENSITIVITY_500DPS
         elif self._gyro_range == GYRO_RANGE_1000DPS:
-            return map(lambda x: x * _GYRO_SENSITIVITY_1000DPS, raw)
+            factor = _GYRO_SENSITIVITY_1000DPS
         elif self._gyro_range == GYRO_RANGE_2000DPS:
-            return map(lambda x: x * _GYRO_SENSITIVITY_2000DPS, raw)
-    # pylint: enable=inconsistent-return-statements
+            factor = _GYRO_SENSITIVITY_2000DPS
+        return [x * factor for x in raw]
