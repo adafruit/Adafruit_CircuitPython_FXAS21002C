@@ -22,6 +22,6 @@ while True:
     # Read gyroscope.
     gyro_x, gyro_y, gyro_z = sensor.gyroscope
     # Print values.
-    print('Gyroscope (radians/s): ({0:0.3f},{1:0.3f},{2:0.3f})'.format(gyro_x, gyro_y, gyro_z))
+    print('Gyroscope (radians/s): ({0:0.3f},  {1:0.3f},  {2:0.3f})'.format(gyro_x, gyro_y, gyro_z))
     # Delay for a second.
     time.sleep(1.0)
