@@ -24,12 +24,26 @@
 ====================================================
 
 CircuitPython module for the NXP FXAS21002C gyroscope.  Based on the driver
-from:
-  https://github.com/adafruit/Adafruit_FXAS21002C
+from: https://github.com/adafruit/Adafruit_FXAS21002C
 
 See examples/simpletest.py for a demo of the usage.
 
 * Author(s): Tony DiCola
+
+Implementation Notes
+--------------------
+
+**Hardware:**
+
+*  Adafruit `Precision NXP 9-DOF Breakout Board - FXOS8700 + FXAS21002
+   <https://www.adafruit.com/product/3463>`_ (Product ID: 3463)
+
+**Software and Dependencies:**
+
+* Adafruit CircuitPython firmware (2.2.0+) for the ESP8622 and M0-based boards:
+  https://github.com/adafruit/circuitpython/releases
+
+* Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
 """
 import time
 try:
