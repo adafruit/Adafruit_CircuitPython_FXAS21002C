@@ -10,6 +10,10 @@ Introduction
     :target: https://discord.gg/nBQh6qu
     :alt: Discord
 
+.. image:: https://travis-ci.org/adafruit/Adafruit_CircuitPython_FXAS21002C.svg?branch=master
+    :target: https://travis-ci.org/adafruit/Adafruit_CircuitPython_FXAS21002C
+    :alt: Build Status
+
 CircuitPython module for the NXP FXAS21002C gyroscope.
 
 Dependencies
