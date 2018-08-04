@@ -51,7 +51,7 @@ try:
 except ImportError:
     import struct
 
-import adafruit_bus_device.i2c_device as i2c_device
+import adafruit_bus_device.i2c_device as i2c_dev
 from micropython import const
 
 
@@ -95,7 +95,7 @@ class FXAS21002C:
         assert gyro_range in (GYRO_RANGE_250DPS, GYRO_RANGE_500DPS,
                               GYRO_RANGE_1000DPS, GYRO_RANGE_2000DPS)
         self._gyro_range = gyro_range
-        self._device = i2c_device.I2CDevice(i2c, address)
+        self._device = i2c_dev.I2CDevice(i2c, address)
         # Check for chip ID value.
         if self._read_u8(_GYRO_REGISTER_WHO_AM_I) != _FXAS21002C_ID:
             raise RuntimeError('Failed to find FXAS21002C, check wiring!')
