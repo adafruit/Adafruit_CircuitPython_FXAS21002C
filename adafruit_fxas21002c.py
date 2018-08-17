@@ -122,8 +122,8 @@ class FXAS21002C:
         # Read an 8-bit unsigned value from the specified 8-bit address.
         with self._device as i2c:
             self._BUFFER[0] = address & 0xFF
-            i2c.write(self._BUFFER, end=1, stop=False)
-            i2c.readinto(self._BUFFER, end=1)
+            self._device.write_then_readinto(self._BUFFER, self._BUFFER,
+                                             out_end=1, in_end=1, stop=False)
         return self._BUFFER[0]
 
     def _write_u8(self, address, val):
@@ -141,8 +141,8 @@ class FXAS21002C:
         # Read gyro data from the sensor.
         with self._device:
             self._BUFFER[0] = _GYRO_REGISTER_OUT_X_MSB
-            self._device.write(self._BUFFER, end=1, stop=False)
-            self._device.readinto(self._BUFFER)
+            self._device.write_then_readinto(self._BUFFER, self._BUFFER,
+                                             out_end=1, stop=False)
         # Parse out the gyroscope data as 16-bit signed data.
         raw_x = struct.unpack_from('>h', self._BUFFER[0:2])[0]
         raw_y = struct.unpack_from('>h', self._BUFFER[2:4])[0]
