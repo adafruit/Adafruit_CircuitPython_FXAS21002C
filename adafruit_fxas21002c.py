@@ -122,8 +122,8 @@ class FXAS21002C:
         # Read an 8-bit unsigned value from the specified 8-bit address.
         with self._device as i2c:
             self._BUFFER[0] = address & 0xFF
-            self._device.write_then_readinto(self._BUFFER, self._BUFFER,
-                                             out_end=1, in_end=1, stop=False)
+            i2c.write_then_readinto(self._BUFFER, self._BUFFER,
+                                    out_end=1, in_end=1, stop=False)
         return self._BUFFER[0]
 
     def _write_u8(self, address, val):
