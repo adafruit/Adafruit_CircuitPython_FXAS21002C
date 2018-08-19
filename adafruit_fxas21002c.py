@@ -139,10 +139,10 @@ class FXAS21002C:
         units consider using the gyroscope property!
         """
         # Read gyro data from the sensor.
-        with self._device:
+        with self._device as i2c:
             self._BUFFER[0] = _GYRO_REGISTER_OUT_X_MSB
-            self._device.write_then_readinto(self._BUFFER, self._BUFFER,
-                                             out_end=1, stop=False)
+            i2c.write_then_readinto(self._BUFFER, self._BUFFER,
+               	                    out_end=1, stop=False)
         # Parse out the gyroscope data as 16-bit signed data.
         raw_x = struct.unpack_from('>h', self._BUFFER[0:2])[0]
         raw_y = struct.unpack_from('>h', self._BUFFER[2:4])[0]
