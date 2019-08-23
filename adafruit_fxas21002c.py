@@ -123,7 +123,7 @@ class FXAS21002C:
         with self._device as i2c:
             self._BUFFER[0] = address & 0xFF
             i2c.write_then_readinto(self._BUFFER, self._BUFFER,
-                                    out_end=1, in_end=1, stop=False)
+                                    out_end=1, in_end=1)
         return self._BUFFER[0]
 
     def _write_u8(self, address, val):
@@ -142,7 +142,7 @@ class FXAS21002C:
         with self._device as i2c:
             self._BUFFER[0] = _GYRO_REGISTER_OUT_X_MSB
             i2c.write_then_readinto(self._BUFFER, self._BUFFER,
-               	                    out_end=1, stop=False)
+                                    out_end=1)
         # Parse out the gyroscope data as 16-bit signed data.
         raw_x = struct.unpack_from('>h', self._BUFFER[0:2])[0]
         raw_y = struct.unpack_from('>h', self._BUFFER[2:4])[0]
