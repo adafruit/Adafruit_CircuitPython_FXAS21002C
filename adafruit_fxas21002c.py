@@ -51,6 +51,9 @@ try:
 except ImportError:
     import struct
 
+__version__ = "0.0.0-auto.0"
+__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_FXAS21002C.git"
+
 import adafruit_bus_device.i2c_device as i2c_dev
 from micropython import const
 
