@@ -1,4 +1,3 @@
-
 Introduction
 ============
 
@@ -6,7 +5,7 @@ Introduction
     :target: https://circuitpython.readthedocs.io/projects/fxas21002c/en/latest/
     :alt: Documentation Status
 
-.. image :: https://img.shields.io/discord/327254708534116352.svg
+.. image:: https://img.shields.io/discord/327254708534116352.svg
     :target: https://discord.gg/nBQh6qu
     :alt: Discord
 
@@ -27,10 +26,48 @@ Please ensure all dependencies are available on the CircuitPython filesystem.
 This is easily achieved by downloading
 `the Adafruit library and driver bundle <https://github.com/adafruit/Adafruit_CircuitPython_Bundle>`_.
 
+Installing from PyPI
+=====================
+On supported GNU/Linux systems like the Raspberry Pi, you can install the driver locally `from
+PyPI <https://pypi.org/project/adafruit-circuitpython-fxas21002c/>`_. To install for current user:
+
+.. code-block:: shell
+
+    pip3 install adafruit-circuitpython-fxas21002c
+
+To install system-wide (this may be required in some cases):
+
+.. code-block:: shell
+
+    sudo pip3 install adafruit-circuitpython-fxas21002c
+
+To install in a virtual environment in your current project:
+
+.. code-block:: shell
+
+    mkdir project-name && cd project-name
+    python3 -m venv .env
+    source .env/bin/activate
+    pip3 install adafruit-circuitpython-fxas21002c
+
 Usage Example
 =============
 
-See examples/simpletest.py for an example of the usage.
+.. code-block:: python
+
+    import time
+    import board
+    import busio
+    import adafruit_fxas21002c
+
+    i2c = busio.I2C(board.SCL, board.SDA)
+    sensor = adafruit_fxas21002c.FXAS21002C(i2c)
+
+    while True:
+        gyro_x, gyro_y, gyro_z = sensor.gyroscope
+        print('Gyroscope (radians/s): ({0:0.3f},  {1:0.3f},  {2:0.3f})'.format(gyro_x, gyro_y, gyro_z))
+        time.sleep(1.0)
+
 
 Contributing
 ============
