@@ -9,8 +9,8 @@ Introduction
     :target: https://discord.gg/nBQh6qu
     :alt: Discord
 
-.. image:: https://travis-ci.com/adafruit/Adafruit_CircuitPython_FXAS21002C.svg?branch=master
-    :target: https://travis-ci.com/adafruit/Adafruit_CircuitPython_FXAS21002C
+.. image:: https://github.com/adafruit/Adafruit_CircuitPython_FXAS21002C/workflows/Build%20CI/badge.svg
+    :target: https://github.com/adafruit/Adafruit_CircuitPython_FXAS21002C/actions/
     :alt: Build Status
 
 CircuitPython module for the NXP FXAS21002C gyroscope.
