@@ -60,7 +60,6 @@ from micropython import const
 
 
 # Internal constants and register values:
-# pylint: disable=bad-whitespace
 _FXAS21002C_ADDRESS = const(0x21)  # 0100001
 _FXAS21002C_ID = const(0xD7)  # 1101 0111
 _GYRO_REGISTER_STATUS = const(0x00)
@@ -84,7 +83,6 @@ GYRO_RANGE_250DPS = 250
 GYRO_RANGE_500DPS = 500
 GYRO_RANGE_1000DPS = 1000
 GYRO_RANGE_2000DPS = 2000
-# pylint: enable=bad-whitespace
 
 
 class FXAS21002C:
