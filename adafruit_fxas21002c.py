@@ -84,6 +84,9 @@ GYRO_RANGE_500DPS = 500
 GYRO_RANGE_1000DPS = 1000
 GYRO_RANGE_2000DPS = 2000
 
+# Unit conversion:
+DEGREE_TO_RAD = 3.141592653589793 / 180
+
 
 class FXAS21002C:
     """Driver for the NXP FXAS21002C gyroscope."""
@@ -172,4 +175,5 @@ class FXAS21002C:
             factor = _GYRO_SENSITIVITY_1000DPS
         elif self._gyro_range == GYRO_RANGE_2000DPS:
             factor = _GYRO_SENSITIVITY_2000DPS
+        factor *= DEGREE_TO_RAD
         return [x * factor for x in raw]
