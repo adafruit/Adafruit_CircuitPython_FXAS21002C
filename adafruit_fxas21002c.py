@@ -23,8 +23,8 @@ Implementation Notes
 
 **Software and Dependencies:**
 
-* Adafruit CircuitPython firmware (2.2.0+) for the ESP8622 and M0-based boards:
-  https://github.com/adafruit/circuitpython/releases
+* Adafruit CircuitPython firmware for the supported boards:
+  https://circuitpython.org/downloads
 
 * Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
 """
@@ -72,7 +72,37 @@ DEGREE_TO_RAD = 3.141592653589793 / 180
 
 
 class FXAS21002C:
-    """Driver for the NXP FXAS21002C gyroscope."""
+    """Driver for the NXP FXAS21002C gyroscope.
+
+    :param ~busio.I2C i2c: The I2C bus the device is connected to
+    :param int address: The I2C device address. Defaults to :const:`0x21`
+    :param int gyro_range: Device range. Defaults to :const:`250`.
+
+
+    **Quickstart: Importing and using the device**
+
+        Here is an example of using the :class:`FXAS21002C` class.
+        First you will need to import the libraries to use the sensor
+
+        .. code-block:: python
+
+            import board
+            import adafruit_fxas21002c
+
+        Once this is done you can define your `board.I2C` object and define your sensor object
+
+        .. code-block:: python
+
+            i2c = board.I2C()  # uses board.SCL and board.SDA
+            sensor = adafruit_fxas21002c.FXAS21002C(i2c)
+
+        Now you have access to the :attr:`gyroscope` attribute
+
+        .. code-block:: python
+
+            gyro_x, gyro_y, gyro_z = sensor.gyroscope
+
+    """
 
     # Class-level buffer for reading and writing data with the sensor.
     # This reduces memory allocations but means the code is not re-entrant or
@@ -101,7 +131,7 @@ class FXAS21002C:
         elif gyro_range == GYRO_RANGE_2000DPS:
             ctrl_reg0 = 0x00
         # Reset then switch to active mode with 100Hz output
-        # Putting into standy doesn't work as the chip becomes instantly
+        # Putting into standby doesn't work as the chip becomes instantly
         # unresponsive.  Perhaps CircuitPython is too slow to go into standby
         # and send reset?  Keep these two commented for now:
         # self._write_u8(_GYRO_REGISTER_CTRL_REG1, 0x00)     # Standby)

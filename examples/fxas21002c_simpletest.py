@@ -4,15 +4,12 @@
 # Simple demo of the FXAS21002C gyroscope.
 # Will print the gyroscope values every second.
 import time
-
 import board
-import busio
-
 import adafruit_fxas21002c
 
 
-# Initialize I2C bus and device.
-i2c = busio.I2C(board.SCL, board.SDA)
+# Create sensor object, communicating over the board's default I2C bus
+i2c = board.I2C()  # uses board.SCL and board.SDA
 sensor = adafruit_fxas21002c.FXAS21002C(i2c)
 # Optionally create the sensor with a different gyroscope range (the
 # default is 250 DPS, but you can use 500, 1000, or 2000 DPS values):
