@@ -28,12 +28,8 @@ Implementation Notes
 
 * Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
 """
+import struct
 import time
-
-try:
-    import ustruct as struct
-except ImportError:
-    import struct
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_FXAS21002C.git"
