@@ -32,7 +32,7 @@ import struct
 import time
 
 try:
-    from typing import Tuple
+    from typing import List, Tuple
     from busio import I2C
 except ImportError:
     pass
@@ -181,7 +181,7 @@ class FXAS21002C:
     # types.  Perhaps it doesn't understand map returns an iterable value.
     # Disable the warning.
     @property
-    def gyroscope(self) -> Tuple[float, float, float]:
+    def gyroscope(self) -> List[float]:
         """Read the gyroscope value and return its X, Y, Z axis values as a
         3-tuple in radians/second.
         """
