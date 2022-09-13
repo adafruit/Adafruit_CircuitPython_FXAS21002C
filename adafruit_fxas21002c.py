@@ -31,6 +31,12 @@ Implementation Notes
 import struct
 import time
 
+try:
+    from typing import List, Tuple
+    from busio import I2C
+except ImportError:
+    pass
+
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_FXAS21002C.git"
 
@@ -105,7 +111,12 @@ class FXAS21002C:
     # thread safe!
     _BUFFER = bytearray(7)
 
-    def __init__(self, i2c, address=_FXAS21002C_ADDRESS, gyro_range=GYRO_RANGE_250DPS):
+    def __init__(
+        self,
+        i2c: I2C,
+        address: int = _FXAS21002C_ADDRESS,
+        gyro_range: int = GYRO_RANGE_250DPS,
+    ) -> None:
         if gyro_range not in (
             GYRO_RANGE_250DPS,
             GYRO_RANGE_500DPS,
@@ -137,21 +148,21 @@ class FXAS21002C:
         self._write_u8(_GYRO_REGISTER_CTRL_REG1, 0x0E)  # Active
         time.sleep(0.1)  # 60 ms + 1/ODR
 
-    def _read_u8(self, address):
+    def _read_u8(self, address: int) -> int:
         # Read an 8-bit unsigned value from the specified 8-bit address.
         with self._device as i2c:
             self._BUFFER[0] = address & 0xFF
             i2c.write_then_readinto(self._BUFFER, self._BUFFER, out_end=1, in_end=1)
         return self._BUFFER[0]
 
-    def _write_u8(self, address, val):
+    def _write_u8(self, address: int, val: int) -> None:
         # Write an 8-bit unsigned value to the specified 8-bit address.
         with self._device as i2c:
             self._BUFFER[0] = address & 0xFF
             self._BUFFER[1] = val & 0xFF
             i2c.write(self._BUFFER, end=2)
 
-    def read_raw(self):
+    def read_raw(self) -> Tuple[int, int, int]:
         """Read the raw gyroscope readings.  Returns a 3-tuple of X, Y, Z axis
         16-bit signed values.  If you want the gyroscope values in friendly
         units consider using the gyroscope property!
@@ -170,7 +181,7 @@ class FXAS21002C:
     # types.  Perhaps it doesn't understand map returns an iterable value.
     # Disable the warning.
     @property
-    def gyroscope(self):
+    def gyroscope(self) -> List[float]:
         """Read the gyroscope value and return its X, Y, Z axis values as a
         3-tuple in radians/second.
         """
