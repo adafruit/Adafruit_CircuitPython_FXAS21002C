@@ -10,6 +10,7 @@ import adafruit_fxas21002c
 
 # Create sensor object, communicating over the board's default I2C bus
 i2c = board.I2C()  # uses board.SCL and board.SDA
+# i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
 sensor = adafruit_fxas21002c.FXAS21002C(i2c)
 # Optionally create the sensor with a different gyroscope range (the
 # default is 250 DPS, but you can use 500, 1000, or 2000 DPS values):
