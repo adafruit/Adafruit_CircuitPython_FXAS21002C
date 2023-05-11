@@ -123,7 +123,7 @@ class FXAS21002C:
             GYRO_RANGE_1000DPS,
             GYRO_RANGE_2000DPS,
         ):
-            raise Exception("gyro_range option selected is not a valid option")
+            raise ValueError("gyro_range option selected is not a valid option")
         self._gyro_range = gyro_range
         self._device = i2c_dev.I2CDevice(i2c, address)
         # Check for chip ID value.
