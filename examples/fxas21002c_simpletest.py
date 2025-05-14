@@ -4,9 +4,10 @@
 # Simple demo of the FXAS21002C gyroscope.
 # Will print the gyroscope values every second.
 import time
-import board
-import adafruit_fxas21002c
 
+import board
+
+import adafruit_fxas21002c
 
 # Create sensor object, communicating over the board's default I2C bus
 i2c = board.I2C()  # uses board.SCL and board.SDA
@@ -23,10 +24,6 @@ while True:
     # Read gyroscope.
     gyro_x, gyro_y, gyro_z = sensor.gyroscope
     # Print values.
-    print(
-        "Gyroscope (radians/s): ({0:0.3f},  {1:0.3f},  {2:0.3f})".format(
-            gyro_x, gyro_y, gyro_z
-        )
-    )
+    print(f"Gyroscope (radians/s): ({gyro_x:0.3f},  {gyro_y:0.3f},  {gyro_z:0.3f})")
     # Delay for a second.
     time.sleep(1.0)
