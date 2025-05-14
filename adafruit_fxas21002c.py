@@ -28,11 +28,13 @@ Implementation Notes
 
 * Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
 """
+
 import struct
 import time
 
 try:
     from typing import List, Tuple
+
     from busio import I2C
 except ImportError:
     pass
@@ -42,7 +44,6 @@ __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_FXAS21002C.git"
 
 import adafruit_bus_device.i2c_device as i2c_dev
 from micropython import const
-
 
 # Internal constants and register values:
 _FXAS21002C_ADDRESS = const(0x21)  # 0100001
@@ -117,12 +118,12 @@ class FXAS21002C:
         address: int = _FXAS21002C_ADDRESS,
         gyro_range: int = GYRO_RANGE_250DPS,
     ) -> None:
-        if gyro_range not in (
+        if gyro_range not in {
             GYRO_RANGE_250DPS,
             GYRO_RANGE_500DPS,
             GYRO_RANGE_1000DPS,
             GYRO_RANGE_2000DPS,
-        ):
+        }:
             raise ValueError("gyro_range option selected is not a valid option")
         self._gyro_range = gyro_range
         self._device = i2c_dev.I2CDevice(i2c, address)
